@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tencent_cloud_chat_common/builders/tencent_cloud_chat_common_builders.dart';
 import 'package:tencent_cloud_chat_common/cross_platforms_adapter/tencent_cloud_chat_platform_adapter.dart';
 import 'package:tencent_cloud_chat_common/data/message/tencent_cloud_chat_message_data.dart';
 import 'package:tencent_cloud_chat_common/tencent_cloud_chat.dart';
@@ -392,6 +393,7 @@ class _TencentCloudChatMessageImageState extends TencentCloudChatMessageState<Te
           progressIndicatorBuilder: (context, child, loadingProgress) {
             return getLoadingWidget();
           },
+          cacheManager: TencentCloudChatCommonBuilders.networkImageCacheManager,
         ),
     );
   }

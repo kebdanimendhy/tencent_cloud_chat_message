@@ -904,6 +904,19 @@ class TencentCloudChatMessageSeparateDataProvider extends ChangeNotifier {
     return _sendMessage(messageInfoResult: messageInfo);
   }
 
+  sendCustomMesssage({
+    required String data,
+    String? desc,
+    String? extension,
+  }) async {
+    final messageInfo = await TencentCloudChat.instance.chatSDKInstance.messageSDK.createCustomMessage(
+      data: data,
+      desc: desc,
+      extension: extension,
+    );
+    return _sendMessage(messageInfoResult: messageInfo);
+  }
+
   resendMessage(V2TimMessage message) async {
     V2TimMsgCreateInfoResult createInfoResult = V2TimMsgCreateInfoResult(messageInfo: message);
     return _sendMessage(

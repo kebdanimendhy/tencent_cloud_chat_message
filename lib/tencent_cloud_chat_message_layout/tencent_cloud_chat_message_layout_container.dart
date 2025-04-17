@@ -108,6 +108,10 @@ class _TencentCloudChatMessageLayoutContainerState extends TencentCloudChatState
     dataProvider.sendVoiceMessage(voicePath, duration);
   }
 
+  void _sendCustomMessage({required String data, String? desc, String? extension}) {
+    dataProvider.sendCustomMesssage(data: data, desc: desc, extension: extension);
+  }
+
   @override
   Widget defaultBuilder(BuildContext context) {
     String showName = dataProvider.conversation?.showName ?? "";
@@ -146,6 +150,7 @@ class _TencentCloudChatMessageLayoutContainerState extends TencentCloudChatState
                 sendVideoMessage: _sendVideoMessage,
                 sendImageMessage: _sendImageMessage,
                 sendTextMessage: _sendTextMessage,
+                sendCustomMessage: _sendCustomMessage,
                 onSelectMember: (({V2TimGroupMemberFullInfo memberFullInfo, int index}) memberData) {
                   // dataProvider.activeMentionIndex = memberData.index;
                   dataProvider.membersNeedToMention = [memberData.memberFullInfo];
