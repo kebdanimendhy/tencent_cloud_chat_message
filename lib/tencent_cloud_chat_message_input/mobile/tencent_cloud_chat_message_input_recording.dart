@@ -166,11 +166,13 @@ class TencentCloudChatMessageInputRecordingState extends TencentCloudChatState<T
         widget.onRecordFinish(RecordInfo(duration: (_recordingDuration / 1000).ceil(), path: recordedFile!));
       } else {
         File recordedFileInstance = File(recordedFile ?? "");
-        recordedFileInstance.delete();
+        if(await recordedFileInstance.exists()) {
+          await recordedFileInstance.delete();
+        }
       }
       _audioRecorder?.dispose();
 
-      setState(() {
+      safeSetState(() {
         _isRecording = false;
         _recordingProgress = 0.0;
         _recordingDuration = 0;
