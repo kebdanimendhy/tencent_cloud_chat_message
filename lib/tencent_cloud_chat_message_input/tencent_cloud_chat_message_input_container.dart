@@ -695,6 +695,8 @@ class _TencentCloudChatMessageInputContainerState extends TencentCloudChatState<
                 sendImageMessage: _sendImageMessage,
                 sendVoiceMessage: _sendVoiceMessage,
                 sendFileMessage: _sendFileMessage,
+                sendImage: _sendImage,
+                sendMediaFromGallery: _sendMediaFromGallery,
                 messageAttachmentOptionsBuilder: _dataProvider.messageBuilders!.getAttachmentOptionsBuilder,
                 clearRepliedMessage: () => _dataProvider.quotedMessage = null,
                 onChooseGroupMembers: _onChooseGroupMembers,
