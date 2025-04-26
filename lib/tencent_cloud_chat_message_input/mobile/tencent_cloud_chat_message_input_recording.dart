@@ -62,13 +62,16 @@ class TencentCloudChatMessageInputRecordingState extends TencentCloudChatState<T
   void dispose() {
     _shakeAnimationController.dispose();
     _audioRecorder?.dispose();
+    _audioRecorder = null;
     _timer?.cancel();
+    _timer = null;
     super.dispose();
   }
 
   Future<void> startRecording() async {
     _audioRecorder = AudioRecorder();
     _timer?.cancel();
+    _timer = null;
 
     // Check and request permission if needed
     if (await _audioRecorder!.hasPermission()) {
@@ -144,6 +147,7 @@ class TencentCloudChatMessageInputRecordingState extends TencentCloudChatState<T
       final adjustMaxDuration = maxDuration - 800;
       if (_recordingDuration >= adjustMaxDuration) {
         timer.cancel();
+        _timer = null;
         stopRecording(cancel: false);
       }
     });
@@ -166,11 +170,12 @@ class TencentCloudChatMessageInputRecordingState extends TencentCloudChatState<T
         widget.onRecordFinish(RecordInfo(duration: (_recordingDuration / 1000).ceil(), path: recordedFile!));
       } else {
         File recordedFileInstance = File(recordedFile ?? "");
-        if(await recordedFileInstance.exists()) {
+        if (await recordedFileInstance.exists()) {
           await recordedFileInstance.delete();
         }
       }
       _audioRecorder?.dispose();
+      _audioRecorder = null;
 
       safeSetState(() {
         _isRecording = false;
