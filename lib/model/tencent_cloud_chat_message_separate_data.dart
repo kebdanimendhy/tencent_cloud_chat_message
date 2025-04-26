@@ -8,6 +8,7 @@ import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:tencent_cloud_chat_common/base/safe_change_notifier.dart';
 import 'package:tencent_cloud_chat_common/components/component_config/tencent_cloud_chat_message_config.dart';
 import 'package:tencent_cloud_chat_common/components/component_event_handlers/tencent_cloud_chat_message_event_handlers.dart';
 import 'package:tencent_cloud_chat_common/components/tencent_cloud_chat_components_utils.dart';
@@ -24,7 +25,7 @@ import 'package:tencent_cloud_chat_message/model/tencent_cloud_chat_message_data
 import 'package:tencent_cloud_chat_message/tencent_cloud_chat_message_builders.dart';
 import 'package:tencent_cloud_chat_message/tencent_cloud_chat_message_controller.dart';
 
-class TencentCloudChatMessageSeparateDataProvider extends ChangeNotifier {
+class TencentCloudChatMessageSeparateDataProvider extends SafeChangeNotifier {
   final AutoScrollController desktopInputMemberSelectionPanelScroll = AutoScrollController(
     axis: Axis.vertical,
   );
@@ -492,6 +493,7 @@ class TencentCloudChatMessageSeparateDataProvider extends ChangeNotifier {
     }
 
     final conversation = await loadConversation(shouldUpdateState: true);
+    if (notifierDisposed) return;
     if (_groupID != null) {
       _loadMentionedMessages(conversation: conversation);
     }
