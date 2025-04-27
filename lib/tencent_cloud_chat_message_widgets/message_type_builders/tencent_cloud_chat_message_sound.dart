@@ -38,6 +38,26 @@ class TimSoundCurrentRenderInfo {
   }
 }
 
+// 目前只考虑解决声音的问情形, url自定义
+final class TencentCloudChatMessageSoundUrl {
+  TencentCloudChatMessageSoundUrl._();
+  static FutureOr<String?> Function(V2TimMessage message, V2TimMessageOnlineUrl onlineUrl)? _getMessageOnlineUrl;
+  static FutureOr<String?> Function(V2TimMessage message)? _getLocalUrl;
+  static FutureOr<bool?> Function(V2TimMessage message)? _hasLocalSound;
+  static FutureOr<bool?> Function(V2TimMessage message)? _tryAddToDownloadQueue;
+  static void init({
+    FutureOr<String?> Function(V2TimMessage message, V2TimMessageOnlineUrl onlineUrl)? getMessageOnlineUrl,
+    FutureOr<String?> Function(V2TimMessage message)? getLocalUrl,
+    FutureOr<bool?> Function(V2TimMessage message)? hasLocalSound,
+    FutureOr<bool?> Function(V2TimMessage message)? tryAddToDownloadQueue,
+  }) {
+    _getMessageOnlineUrl = getMessageOnlineUrl ?? _getMessageOnlineUrl;
+    _getLocalUrl = getLocalUrl ?? _getLocalUrl;
+    _hasLocalSound = hasLocalSound ?? _hasLocalSound;
+    _tryAddToDownloadQueue = tryAddToDownloadQueue ?? _tryAddToDownloadQueue;
+  }
+}
+
 class TencentCloudChatMessageSound extends TencentCloudChatMessageItemBase {
   const TencentCloudChatMessageSound({
     super.key,
@@ -80,8 +100,10 @@ class _TencentCloudChatMessageSoundState extends TencentCloudChatMessageState<Te
     );
   }
 
-  addDownloadMessageToQueue() {
-    if (hasLocalSound()) {
+  addDownloadMessageToQueue() async {
+    final add = await TencentCloudChatMessageSoundUrl._tryAddToDownloadQueue?.call(widget.data.message);
+    if (add == false) return;
+    if (await hasLocalSound()) {
       return;
     }
     if (isSendingMessage()) {
@@ -128,7 +150,9 @@ class _TencentCloudChatMessageSoundState extends TencentCloudChatMessageState<Te
     return false;
   }
 
-  bool hasLocalSound() {
+  Future<bool> hasLocalSound() async {
+    final has = await TencentCloudChatMessageSoundUrl._hasLocalSound?.call(widget.data.message);
+    if (has != null) return has;
     bool res = false;
     if (widget.data.message.soundElem != null) {
       V2TimSoundElem sound = widget.data.message.soundElem!;
@@ -148,7 +172,9 @@ class _TencentCloudChatMessageSoundState extends TencentCloudChatMessageState<Te
     return res;
   }
 
-  String getLocalUrl() {
+  Future<String> getLocalUrl() async {
+    final localUrl = await TencentCloudChatMessageSoundUrl._getLocalUrl?.call(widget.data.message);
+    if (localUrl != null) return localUrl;
     if (TencentCloudChatUtils.checkString(widget.data.message.soundElem!.localUrl) != null) {
       return widget.data.message.soundElem!.localUrl!;
     }
@@ -185,14 +211,15 @@ class _TencentCloudChatMessageSoundState extends TencentCloudChatMessageState<Te
   getSoundUrl() async {
     if (TencentCloudChatUtils.checkString(widget.data.message.msgID) != null) {
       // check if exits local url . if not get online url
-      bool hasLocal = hasLocalSound();
+      bool hasLocal = await hasLocalSound();
       bool isSending = isSendingMessage();
       bool hasClientPath = hasSelfClientPath();
       bool played = isPlayed();
       if (hasLocal) {
+        final localu = await getLocalUrl();
         safeSetState(() {
           currentRenderSoundInfo = TimSoundCurrentRenderInfo(
-            path: getLocalUrl(),
+            path: localu,
             type: TimSoundCurrentRenderType.local,
             played: played,
           );
@@ -218,6 +245,10 @@ class _TencentCloudChatMessageSoundState extends TencentCloudChatMessageState<Te
       } else {
         if (data.soundElem != null) {
           if (TencentCloudChatUtils.checkString(data.soundElem!.url) != null) {
+            final onlineUrl = await TencentCloudChatMessageSoundUrl._getMessageOnlineUrl?.call(widget.data.message, data);
+            if (onlineUrl != null) {
+              data.soundElem!.url = onlineUrl;
+            }
             safeSetState(() {
               currentRenderSoundInfo = TimSoundCurrentRenderInfo(
                 path: data.soundElem!.url!,
@@ -321,8 +352,8 @@ class _TencentCloudChatMessageSoundState extends TencentCloudChatMessageState<Te
     if (isPause) {
       return await TencentCloudChat.instance.dataInstance.messageData.resumeAudio();
     }
-    if (hasLocalSound()) {
-      var localu = getLocalUrl();
+    if (await hasLocalSound()) {
+      var localu = await getLocalUrl();
       return await TencentCloudChat.instance.dataInstance.messageData.playAudio(
           source: AudioPlayInfo(
         type: AudioPlayType.path,
