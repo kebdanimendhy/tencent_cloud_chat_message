@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tencent_cloud_chat_common/components/components_definition/tencent_cloud_chat_component_builder_definitions.dart';
 import 'package:tencent_cloud_chat_common/cross_platforms_adapter/tencent_cloud_chat_platform_adapter.dart';
+import 'package:tencent_cloud_chat_common/data/theme/color/color_base.dart';
+import 'package:tencent_cloud_chat_common/data/theme/text_style/text_style.dart';
 import 'package:tencent_cloud_chat_common/tencent_cloud_chat.dart';
 import 'package:tencent_cloud_chat_common/utils/tencent_cloud_chat_utils.dart';
 import 'package:tencent_cloud_chat_common/base/tencent_cloud_chat_state_widget.dart';
@@ -18,6 +20,8 @@ import 'package:tencent_cloud_chat_message/tencent_cloud_chat_message_input/mobi
 import 'package:tencent_cloud_chat_message/tencent_cloud_chat_message_input/mobile/tencent_cloud_chat_message_camera.dart';
 import 'package:tencent_cloud_chat_message/tencent_cloud_chat_message_input/mobile/tencent_cloud_chat_message_input_recording.dart';
 import 'package:tencent_cloud_chat_message/tencent_cloud_chat_message_input/select_mode/tencent_cloud_chat_message_input_select_mode_container.dart';
+
+part 'tencent_cloud_chat_message_input_mobile_customize.dart';
 
 class TencentCloudChatMessageInputMobile extends StatefulWidget {
   final MessageInputBuilderData inputData;
@@ -604,8 +608,8 @@ class _TencentCloudChatMessageInputMobileState extends TencentCloudChatState<Ten
             color: colorTheme.inputAreaBackground,
             padding: EdgeInsets.only(
               bottom: _showStickerPanel ? 0 : (_bottomPadding! > 8 ? getSquareSize(0) : getSquareSize(16)),
-              left: getSquareSize(16),
-              right: getSquareSize(16),
+              left: _showStickerPanel ? 0 : getSquareSize(16),
+              right: _showStickerPanel ? 0 : getSquareSize(16),
               top: widget.inputData.repliedMessage != null ? getSquareSize(8) : getSquareSize(16),
             ),
             child: Column(
