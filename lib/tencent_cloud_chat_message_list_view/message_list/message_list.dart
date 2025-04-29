@@ -467,6 +467,7 @@ class MessageListState extends State<MessageList> {
     await widget.onLoadToLatestReadMessage();
     await Future.delayed(const Duration(milliseconds: 50));
 
+    if (!mounted) return;
     setState(() {
       loadingLatestReadMessage = false;
     });
@@ -481,6 +482,7 @@ class MessageListState extends State<MessageList> {
     await widget.onLoadToLatestMessageMentionedMe();
     await Future.delayed(const Duration(milliseconds: 50));
 
+    if (!mounted) return;
     setState(() {
       loadingMessageMentionedMe = false;
     });
