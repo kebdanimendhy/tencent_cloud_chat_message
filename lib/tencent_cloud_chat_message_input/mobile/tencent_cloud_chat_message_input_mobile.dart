@@ -104,7 +104,7 @@ class _TencentCloudChatMessageInputMobileState extends TencentCloudChatState<Ten
   @override
   void dispose() {
     super.dispose();
-    _messageAttachmentOptions.dispose();
+    // _messageAttachmentOptions.dispose(); // 重复dispose
     WidgetsBinding.instance.removeObserver(this);
     _removeTextInputEvent();
     removeUIKitListener();
