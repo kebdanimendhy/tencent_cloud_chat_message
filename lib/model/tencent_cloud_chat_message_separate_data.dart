@@ -789,6 +789,7 @@ class TencentCloudChatMessageSeparateDataProvider extends SafeChangeNotifier {
         repliedMessage: tempRepliedMessage,
         groupInfo: groupInfo,
         isResend: isResend,
+        config: _config,
       );
 
       messageController.scrollToBottom(
