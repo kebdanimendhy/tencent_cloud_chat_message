@@ -113,7 +113,11 @@ class _TencentCloudChatMessageInputMobileState extends TencentCloudChatState<Ten
   @override
   void didUpdateWidget(covariant TencentCloudChatMessageInputMobile oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _textEditingFocusNode.unfocus();
+    // by dq
+    // 这里还没有找到原因，
+    // 不知道在什么情况下，就会出现弹出后马上收起，导致不能正常弹起键盘，先注释
+    // TODO: fix it!
+    // _textEditingFocusNode.unfocus();
 
     if (widget.inputData.specifiedMessageText != oldWidget.inputData.specifiedMessageText) {
       _textEditingController.text = widget.inputData.specifiedMessageText ?? "";
@@ -141,6 +145,10 @@ class _TencentCloudChatMessageInputMobileState extends TencentCloudChatState<Ten
       }
     }
   }
+  
+  // 返回true 表示不再执行原有逻辑
+  // 返回false 表示继续执行原有逻辑
+  bool setStateOnFocusChange(bool hasFocus) => false;
 
   void _addTextInputEvent() {
     try {
@@ -150,11 +158,17 @@ class _TencentCloudChatMessageInputMobileState extends TencentCloudChatState<Ten
       _textEditingFocusNode.addListener(() {
         if (_textEditingFocusNode.hasFocus) {
           safeSetState(() {
+            if (setStateOnFocusChange(true)) {
+              return;
+            }
             _showKeyboard = true;
             _showStickerPanel = false;
           });
         } else {
           safeSetState(() {
+            if (setStateOnFocusChange(false)) {
+              return;
+            }
             _showKeyboard = false;
           });
         }
