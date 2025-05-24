@@ -1,3 +1,6 @@
+# 3.2.1+1
+* Solve the problem that the keyboard of the message input box cannot pop up.
+
 # 3.2.1
 ## General
 ### Breaking changes

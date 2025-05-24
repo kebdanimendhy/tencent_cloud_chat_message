@@ -109,7 +109,6 @@ class _TencentCloudChatMessageInputMobileState extends TencentCloudChatState<Ten
   @override
   void didUpdateWidget(covariant TencentCloudChatMessageInputMobile oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _textEditingFocusNode.unfocus();
 
     if (widget.inputData.specifiedMessageText != oldWidget.inputData.specifiedMessageText) {
       _textEditingController.text = widget.inputData.specifiedMessageText ?? "";
